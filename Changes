@@ -1,5 +1,10 @@
 Revision history for ExtUtils-AutoConf
 
-0.01    Date/time
-        First version, released on an unsuspecting world.
+0.00_002 2005, 3 January
+	- version correcting test for Mac OS-X (thanks, Michael Schwern);
+	- using Config module to get CC value and EXE extension;
+	- using ExtUtils::CBuilder (well take advantage of it later);
+
+0.00_001 Some time ago
+        - First version, released on an unsuspecting world.
 

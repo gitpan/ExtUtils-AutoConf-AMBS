@@ -1,5 +1,7 @@
 package ExtUtils::AutoConf;
 
+use Config;
+
 use File::Temp qw/tempfile/;
 
 use warnings;
@@ -11,11 +13,11 @@ ExtUtils::AutoConf - A module to implement some of AutoConf macros in pure perl.
 
 =head1 VERSION
 
-Version 0.00_001
+Version 0.00_002
 
 =cut
 
-our $VERSION = '0.00_001';
+our $VERSION = '0.00_002';
 
 =head1 ABSTRACT
 
@@ -26,9 +28,21 @@ macros do. To detect a command, to detect a library, etc.
 
     use ExtUtils::AutoConf;
 
+    ExtUtils::AutoConf->check_cc();
+
     ExtUtils::AutoConf->check_lib("ncurses", "tgoto");
 
 =head1 FUNCTIONS
+
+=head2 check_cc
+
+This function checks if you have a running C compiler.
+
+=cut
+
+sub check_cc {
+  ExtUtils::CBuilder->have_compiler;
+}
 
 =head2 check_lib
 
@@ -64,15 +78,14 @@ char $func ();
 int
 main ()
 {
-$func ();
-  ;
+  $func ();
   return 0;
 }
 _ACEOF
 
   ## These variables should not be hardcoded.
-  my $CC = "gcc";
-  my $EXT = "";
+  my $CC = $Config{cc};
+  my $EXT = $Config{_exe};
 
   my ($fh, $filename) = tempfile( "testXXXXXX", SUFFIX => '.c');
   $filename =~ m!.c$!;
@@ -118,12 +131,18 @@ be notified of progress on your bug as I make changes.
 
 Michael Schwern
 
+Ken Williams
+
 =head1 COPYRIGHT & LICENSE
 
 Copyright 2004 Alberto Simões, All Rights Reserved.
 
 This program is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself.
+
+=head1 SEE ALSO
+
+ExtUtils::CBuilder(3)
 
 =cut
 

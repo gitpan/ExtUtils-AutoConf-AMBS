@@ -1,10 +1,11 @@
 # http://module-build.sourceforge.net/META-spec.html
 #XXXXXXX This is a prototype!!!  It will change in the future!!! XXXXX#
 name:         ExtUtils-AutoConf
-version:      0.00_001
+version:      0.00_002
 version_from: lib/ExtUtils/AutoConf.pm
 installdirs:  site
 requires:
+    ExtUtils::CBuilder:            0.05
     Test::More:                    0
 
 distribution_type: module

@@ -9,7 +9,8 @@ WriteMakefile(
     ABSTRACT_FROM       => 'lib/ExtUtils/AutoConf.pm',
     PL_FILES            => {},
     PREREQ_PM => {
-        'Test::More' => 0,
+		  'ExtUtils::CBuilder' => 0.05,
+		  'Test::More' => 0,
     },
     dist                => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
     clean               => { FILES => 'ExtUtils-AutoConf-*' },
