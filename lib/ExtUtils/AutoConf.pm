@@ -1,4 +1,5 @@
 package ExtUtils::AutoConf;
+use ExtUtils::CBuilder;
 
 use Config;
 
@@ -13,11 +14,11 @@ ExtUtils::AutoConf - A module to implement some of AutoConf macros in pure perl.
 
 =head1 VERSION
 
-Version 0.00_002
+Version 0.01
 
 =cut
 
-our $VERSION = '0.00_002';
+our $VERSION = '0.01';
 
 =head1 ABSTRACT
 
@@ -61,6 +62,8 @@ sub check_lib {
   my $lib = shift;
   my $func = shift;
 
+  my $cbuilder = ExtUtils::CBuilder->new();
+
   return 0 unless $lib;
   return 0 unless $func;
 
@@ -83,9 +86,7 @@ main ()
 }
 _ACEOF
 
-  ## These variables should not be hardcoded.
-  my $CC = $Config{cc};
-  my $EXT = $Config{_exe};
+
 
   my ($fh, $filename) = tempfile( "testXXXXXX", SUFFIX => '.c');
   $filename =~ m!.c$!;
@@ -94,21 +95,21 @@ _ACEOF
   print {$fh} $conftest;
   close $fh;
 
-  print STDERR " + Compile\n";
-  system("$CC -c $filename");
-  if ($?) {
-    unlink $filename;
-    return 0;
-  }
+  my $obj_file = eval{ $cbuilder->compile(source => $filename) };
 
-  print STDERR " + Link\n";
-  system("$CC -o conftest$EXT $base.o $LIBS");
+  return 0 if $@;
+  return 0 unless $obj_file;
+
+
+  my $exe_file = eval { $cbuilder->link_executable(objects => $obj_file,
+						   extra_linker_flags => $LIBS) };
 
   unlink $filename;
-  unlink "$base.o";
-  unlink "conftest$EXT";
+  unlink $obj_file if $obj_file;
+  unlink $exe_file if $exe_file;
 
-  return 0 if $?;
+  return 0 if $@;
+  return 0 unless $exe_file;
 
   return 1;
 }
@@ -120,7 +121,7 @@ Alberto Simões, C<< <ambs@cpan.org> >>
 =head1 BUGS
 
 A lot. Portability is a pain, and I just have a Linux machine.
-B<<Patches welcome>>.
+B<<Patches welcome!>>.
 
 Please report any bugs or feature requests to
 C<bug-extutils-autoconf@rt.cpan.org>, or through the web interface at

@@ -1,13 +1,13 @@
-ExtUtils-AutoConf
-=================
+ ExtUtils::AutoConf version 0.01
+=================================
 
 A module to implement some of AutoConf macros in pure perl.
+
 
 ABSTRACT
 
 With this module I pretend to simulate some of the tasks AutoConf
 macros do. To detect a command, to detect a library, etc.
-
 
 
 INSTALLATION
@@ -20,10 +20,10 @@ To install this module, run the following commands:
     make install
 
 
+COPYRIGHT AND LICENSE
 
-COPYRIGHT AND LICENCE
+Copyright 2004 Alberto Simões, All Rights Reserved.
 
-Copyright (C) 2004 Alberto Simões
+This program is free software; you can redistribute it and/or modify it
+under the same terms as Perl itself.
 
-This library is free software; you can redistribute it and/or modify
-it under the same terms as Perl itself.
