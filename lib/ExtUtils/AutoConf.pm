@@ -4,6 +4,7 @@ use ExtUtils::CBuilder;
 use Config;
 
 use File::Temp qw/tempfile/;
+use File::Spec;
 
 use warnings;
 use strict;
@@ -14,11 +15,11 @@ ExtUtils::AutoConf - A module to implement some of AutoConf macros in pure perl.
 
 =head1 VERSION
 
-Version 0.01
+Version 0.01_001
 
 =cut
 
-our $VERSION = '0.01';
+our $VERSION = '0.01_001';
 
 =head1 ABSTRACT
 
@@ -29,11 +30,101 @@ macros do. To detect a command, to detect a library, etc.
 
     use ExtUtils::AutoConf;
 
+    ExtUtils::AutoConf->check_prog("agrep");
+    ExtUtils::AutoConf->check_progs("agrep", "egrep", "grep");
+
+    ExtUtils::AutoConf->check_prog_awk;
+    ExtUtils::AutoConf->check_prog_egrep;
+
     ExtUtils::AutoConf->check_cc();
 
     ExtUtils::AutoConf->check_lib("ncurses", "tgoto");
 
 =head1 FUNCTIONS
+
+=head2 check_prog
+
+This function checks for a program with the supplied name. In success
+returns the full path for the executable;
+
+=cut
+
+sub check_prog {
+  my $class = shift;
+  # sanitize ac_prog
+  my $ac_prog = _sanitize(shift());
+  my $PATH = $ENV{PATH};
+  my $p;
+  for $p (split /$Config{path_sep}/,$PATH) {
+    my $cmd = File::Spec->catfile($p,$ac_prog);
+    return $cmd if -x $cmd;
+  }
+  return undef;
+}
+
+=head2 check_progs
+
+This function takes a list of program names. Returns the full path for
+the first found on the system. Returns undef if none was found.
+
+=cut
+
+sub check_progs {
+  my $class = shift;
+  my @progs = @_;
+  for (@progs) {
+    my $ans = check_prog($class, $_);
+    return $ans if $ans;
+  }
+  return undef;
+}
+
+
+=head2 check_prog_awk
+
+From the autoconf documentation,
+
+  Check for `gawk', `mawk', `nawk', and `awk', in that order, and
+  set output [...] to the first one that is found.  It tries
+  `gawk' first because that is reported to be the best
+  implementation.
+
+Note that it returns the full path, if found.
+
+=cut
+
+sub check_prog_awk {
+  my $class = shift;
+  return check_progs(qw/$class gawk mawk nawk awk/);
+}
+
+
+=head2 check_prog_egrep
+
+From the autoconf documentation,
+
+  Check for `grep -E' and `egrep', in that order, and [...] output
+  [...] the first one that is found.
+
+Note that it returns the full path, if found.
+
+=cut
+
+sub check_prog_egrep {
+  my $class = shift;
+
+  my $grep;
+
+  if ($grep = check_prog($class,"grep")) {
+    my $ans = `echo a | ($grep -E '(a|b)') 2>/dev/null`;
+    return "$grep -E" if $ans eq "a\n";
+  }
+
+  if ($grep = check_prog($class, "egrep")) {
+    return $grep;
+  }
+  return undef;
+}
 
 =head2 check_cc
 
@@ -114,9 +205,40 @@ _ACEOF
   return 1;
 }
 
+#
+#
+# Auxiliary funcs
+#
+
+sub _sanitize {
+  # This is hard coded, and maybe a little stupid...
+  my $x = shift;
+  $x =~ s/ //g;
+  $x =~ s/\///g;
+  $x =~ s/\\//g;
+  return $x;
+}
+
+
 =head1 AUTHOR
 
 Alberto Simões, C<< <ambs@cpan.org> >>
+
+=head1 NEXT STEPS
+
+Although a lot of work needs to be done, this is the next steps I
+intent to take.
+
+  - detect flex/lex
+  - detect yacc/bison/byacc
+  - detect ranlib (not sure about its importance)
+
+These are the ones I think not too much important, and will be
+addressed later, or by request.
+
+  - detect an 'install' command
+  - detect a 'ln -s' command -- there should be a module doing
+    this kind of task.
 
 =head1 BUGS
 
@@ -136,7 +258,7 @@ Ken Williams
 
 =head1 COPYRIGHT & LICENSE
 
-Copyright 2004 Alberto Simões, All Rights Reserved.
+Copyright 2004-2005 Alberto Simões, All Rights Reserved.
 
 This program is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself.

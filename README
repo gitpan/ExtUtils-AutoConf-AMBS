@@ -1,5 +1,5 @@
- ExtUtils::AutoConf version 0.01
-=================================
+ ExtUtils::AutoConf version 0.01_001
+=====================================
 
 A module to implement some of AutoConf macros in pure perl.
 
@@ -22,7 +22,7 @@ To install this module, run the following commands:
 
 COPYRIGHT AND LICENSE
 
-Copyright 2004 Alberto Simões, All Rights Reserved.
+Copyright 2004-2005 Alberto Simões, All Rights Reserved.
 
 This program is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself.

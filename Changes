@@ -1,15 +1,27 @@
 Revision history for ExtUtils-AutoConf
 
-0.01    2005, 14 January
-	- first indexable version -- I need to use this module
-	  somewhere else;
+0.01_001  2005, 10 February
+
+	- Added 'check_prog' method to check for executable program (see POD)
+	- Added 'check_progs' method to check for a list of programs (see POD)
+	- Added 'check_prog_awk' method to check for an awk implementation (see POD)
+	- Added 'check_prog_egrep' method to check for an egrep implementation (see POD)
+
+
+0.01      2005, 14 January
+
+	- first indexable version -- I need to use this module somewhere else;
 	- using ExtUtils::CBuilder to compile test;
 
-0.00_002 2005, 3 January
+
+0.00_002  2005, 3 January
+
 	- version correcting test for Mac OS-X (thanks, Michael Schwern);
 	- using Config module to get CC value and EXE extension;
 	- using ExtUtils::CBuilder (well take advantage of it later);
 
-0.00_001 Some time ago
-        - First version, released on an unsuspecting world.
+
+0.00_001  2004, a lot of time ago
+
+       	- First version, released on an unsuspecting world.
 
